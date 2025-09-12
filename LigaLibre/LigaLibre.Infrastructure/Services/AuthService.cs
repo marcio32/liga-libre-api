@@ -64,6 +64,8 @@ namespace LigaLibre.Infrastructure.Services
             if(!result.Succeeded)
                 throw new ArgumentException(string.Join(", ", result.Errors.Select(e => e.Description)));
 
+            await _userManager.AddToRoleAsync(user, "User");
+
             var token = await GenerateJwtTokenAsync(user.Email!);
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -100,7 +102,7 @@ namespace LigaLibre.Infrastructure.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(12),
+                expires: DateTime.Now.AddYears(1),
                 signingCredentials: creds
                 );
 

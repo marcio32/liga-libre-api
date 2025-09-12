@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LigaLibre.API.Controllers;
 
+
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class ClubController : ControllerBase
@@ -18,7 +20,6 @@ public class ClubController : ControllerBase
 
     [HttpGet]
     [Route("GetAll")]
-    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var clubs = await _clubService.GetAllClubsAsync();

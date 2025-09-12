@@ -43,7 +43,12 @@ namespace LigaLibre
                     }
                 });
             });
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -57,6 +62,14 @@ namespace LigaLibre
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
 
                 };
+            });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminAndClient", policy =>
+                {
+                    policy.RequireRole("Admin");
+                });
             });
 
 
