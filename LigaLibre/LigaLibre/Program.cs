@@ -72,6 +72,13 @@ namespace LigaLibre
                 });
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -80,7 +87,7 @@ namespace LigaLibre
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors("AllowFrontend");
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

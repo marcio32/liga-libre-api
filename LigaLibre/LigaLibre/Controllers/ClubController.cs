@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LigaLibre.API.Controllers;
 
 
-[Authorize(Roles = "Admin")]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ClubController : ControllerBase
