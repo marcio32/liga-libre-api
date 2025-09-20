@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LigaLibre.Application.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LigaLibre.API.Controllers
+namespace LigaLibre.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class PlayersController(IPlayerService playerService ) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PlayersController : ControllerBase
+    [HttpGet]
+    [Route("GetPlayers")]
+    public async Task<IActionResult> GetByID(int id)
     {
+        var players = await playerService.GetPlayerByIdAsync(id);
+        return Ok(players);
     }
 }

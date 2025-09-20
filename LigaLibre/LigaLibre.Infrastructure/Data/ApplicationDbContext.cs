@@ -15,6 +15,7 @@ namespace LigaLibre.Infrastructure.Data
         }
 
         public DbSet<Club> Club { get; set; }
+        public DbSet<Player> Player { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +30,20 @@ namespace LigaLibre.Infrastructure.Data
                 entity.Property(x => x.Phone).HasMaxLength(20);
                 entity.Property(x => x.Address).HasMaxLength(200);
                 entity.Property(x => x.StadiumName).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<Player>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.LastName).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Position).IsRequired().HasMaxLength(30);
+                entity.Property(e => e.Nationality).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Height).HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.Weight).HasColumnType("decimal(5, 2)");
+
+                entity.HasOne(e => e.Club).WithMany(c => c.Players).HasForeignKey(e => e.ClubId);
+
             });
         }
 

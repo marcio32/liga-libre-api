@@ -11,5 +11,8 @@
         public string Address { get; set; } = string.Empty;
         public string StadiumName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        //Navegacion
+        public ICollection<Player> Players { get; set; } = new List<Player>();
     }
 }

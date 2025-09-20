@@ -11,7 +11,7 @@ namespace LigaLibre.Application
         {
             //Services
             services.AddScoped<IClubService, ClubService>();
-
+            services.AddScoped<IPlayerService, PlayerService>();
             return services;
         }
     }

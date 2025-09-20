@@ -1,6 +1,7 @@
 
 using LigaLibre.Application;
 using LigaLibre.Infrastructure;
+using LigaLibre.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -79,6 +80,8 @@ namespace LigaLibre
                     policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
                 });
             });
+
+            builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
 
             var app = builder.Build();
 

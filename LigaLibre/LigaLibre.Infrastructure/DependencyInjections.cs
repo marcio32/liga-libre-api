@@ -32,6 +32,7 @@ namespace LigaLibre.Infrastructure
 
             //Repositories
             services.AddScoped<IClubRepository, ClubRepository>();
+            services.AddScoped<IPlayerRepository, PlayerRepository>();
 
             //Services
             services.AddScoped<IAuthService, AuthService>();
