@@ -7,6 +7,12 @@ namespace LigaLibre.Application.Services;
 
 public class PlayerService(IPlayerRepository playerRepository) : IPlayerService
 {
+    public Task<IEnumerable<PlayerDto>> GetAllPlayers()
+    {
+        var players = playerRepository.GetAllAsync();
+        return players.ContinueWith(t => t.Result.Select(MapToDto));
+    }
+
     public async Task<IEnumerable<PlayerDto>> GetPlayersByClubAsync(int clubId)
     {
         var players = await playerRepository.GetByClubIdAsync(clubId);
@@ -24,7 +30,7 @@ public class PlayerService(IPlayerRepository playerRepository) : IPlayerService
         var player = new Player
         {
             Age = playerDto.Age,
-            JerseuNumber = playerDto.JerseuNumber,
+            JerseuNumber = playerDto.JerseyNumber,
             FirstName = playerDto.FirstName,
             LastName = playerDto.LastName,
             Position = playerDto.Position,
@@ -52,7 +58,7 @@ public class PlayerService(IPlayerRepository playerRepository) : IPlayerService
         }
 
         existingPlayer.Age = playerDto.Age;
-        existingPlayer.JerseuNumber = playerDto.JerseuNumber;
+        existingPlayer.JerseuNumber = playerDto.JerseyNumber;
         existingPlayer.FirstName = playerDto.FirstName;
         existingPlayer.LastName = playerDto.LastName;
         existingPlayer.Position = playerDto.Position;
@@ -97,5 +103,6 @@ public class PlayerService(IPlayerRepository playerRepository) : IPlayerService
         CreatedAt = player.CreatedAt,
         UpdatedAt = player.UpdatedAt
     };
+
 }
 

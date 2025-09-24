@@ -1,10 +1,12 @@
 
+using LigaLibre.API.Middlewares;
 using LigaLibre.Application;
 using LigaLibre.Infrastructure;
 using LigaLibre.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 namespace LigaLibre
@@ -13,7 +15,13 @@ namespace LigaLibre
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog();
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddControllers();
@@ -82,7 +90,7 @@ namespace LigaLibre
             });
 
             builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
-
+         
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -98,6 +106,8 @@ namespace LigaLibre
 
 
             app.MapControllers();
+
+            app.UseMiddleware<ErrorLoggingMiddleware>();
 
             app.Run();
         }

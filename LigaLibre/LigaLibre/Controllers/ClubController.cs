@@ -1,60 +1,54 @@
-﻿using LigaLibre.Application.DTOs;
+﻿using FluentValidation;
+using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LigaLibre.API.Controllers;
 
-
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ClubController : ControllerBase
+public class ClubController(IClubService clubService, IValidator<CreateClubDto> validator) : ControllerBase
 {
-    private readonly IClubService _clubService;
-
-    public ClubController(IClubService clubService)
-    {
-        _clubService = clubService;
-    }
 
     [HttpGet]
     [Route("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var clubs = await _clubService.GetAllClubsAsync();
+        var clubs = await clubService.GetAllClubsAsync();
         return Ok(clubs);
     }
 
     [HttpGet]
-    [Route("GetById/{id}")]
+    [Route("GetById")]
     public async Task<IActionResult> GetById(int id)
     {
-        var club = await _clubService.GetClubByIdAsync(id);
+        var club = await clubService.GetClubByIdAsync(id);
         return club == null ? NotFound() : Ok(club);
     }
 
     [HttpPost]
-    [Route("Create")]
-    public async Task<IActionResult> Create(CreateClubDto createClubDto)
+    [Route("CreateClub")]
+    public async Task<IActionResult> CreateClub(CreateClubDto createClubDto)
     {
-        var club = await _clubService.CreateClubAsync(createClubDto);
-        return CreatedAtAction(nameof(GetById), new { id = club.Id }, club);
+        var validationResult = await validator.ValidateAsync(createClubDto);
+        return validationResult.IsValid ? StatusCode(201, await clubService.CreateClubAsync(createClubDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpPut]
-    [Route("Update/{id}")]
-    public async Task<IActionResult> Update(int id, CreateClubDto createClubDto)
+    [Route("UpdateClub")]
+    public async Task<IActionResult> UpdateClub(int id, CreateClubDto createClubDto)
     {
-        var club = await _clubService.UpdateClubAsync(id, createClubDto);
-        return Ok(club);
+        var validationResult = await validator.ValidateAsync(createClubDto);
+        return validationResult.IsValid ? Ok(await clubService.UpdateClubAsync(id, createClubDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]
-    [Route("Delete/{id}")]
+    [Route("Delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _clubService.DeleteClubAsync(id);
+        var result = await clubService.DeleteClubAsync(id);
         return Ok(result);
     }
 }

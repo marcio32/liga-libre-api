@@ -1,6 +1,8 @@
-﻿using LigaLibre.Application.Interfaces;
+﻿using FluentValidation;
+using LigaLibre.Application.DTOs;
+using LigaLibre.Application.Interfaces;
 using LigaLibre.Application.Services;
-using Microsoft.Extensions.Configuration;
+using LigaLibre.Application.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LigaLibre.Application
@@ -12,6 +14,8 @@ namespace LigaLibre.Application
             //Services
             services.AddScoped<IClubService, ClubService>();
             services.AddScoped<IPlayerService, PlayerService>();
+            services.AddScoped<IValidator<CreatePlayerDto>, CreatePlayerValidator>();
+            services.AddScoped<IValidator<CreateClubDto>, CreateClubValidator>();
             return services;
         }
     }

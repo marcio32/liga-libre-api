@@ -8,6 +8,7 @@ namespace LigaLibre.Application.Interfaces
         Task<bool> DeletePlayerAsync(int id);
         Task<PlayerDto?> GetPlayerByIdAsync(int id);
         Task<IEnumerable<PlayerDto>> GetPlayersByClubAsync(int clubId);
+        Task<IEnumerable<PlayerDto>> GetAllPlayers();
         Task<PlayerDto> UpdatePlayerAsync(int id, CreatePlayerDto playerDto);
     }
 }
