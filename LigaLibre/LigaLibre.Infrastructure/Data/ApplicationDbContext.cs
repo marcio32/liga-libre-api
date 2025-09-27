@@ -16,6 +16,8 @@ namespace LigaLibre.Infrastructure.Data
 
         public DbSet<Club> Club { get; set; }
         public DbSet<Player> Player { get; set; }
+        public DbSet<Match> Match { get; set; }
+        public DbSet<Referee> Referee { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,7 +25,7 @@ namespace LigaLibre.Infrastructure.Data
 
             modelBuilder.Entity<Club>(entity =>
             {
-                entity.HasKey(x=> x.Id);
+                entity.HasKey(x => x.Id);
                 entity.Property(x => x.Name).IsRequired().HasMaxLength(100);
                 entity.Property(x => x.City).IsRequired().HasMaxLength(50);
                 entity.Property(x => x.Email).IsRequired().HasMaxLength(100);
@@ -44,6 +46,37 @@ namespace LigaLibre.Infrastructure.Data
 
                 entity.HasOne(e => e.Club).WithMany(c => c.Players).HasForeignKey(e => e.ClubId);
 
+            });
+
+            modelBuilder.Entity<Match>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Stadium).HasMaxLength(100);
+                entity.Property(e => e.Notes).HasMaxLength(500);
+
+                entity.HasOne(e => e.HomeClub)
+                .WithMany(c => c.HomeMatches)
+                .HasForeignKey(e => e.HomeClubId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(e => e.AwayClub)
+                .WithMany(c => c.AwayMatches)
+                .HasForeignKey(e => e.AwayClubId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(e => e.Referee)
+                .WithMany(r => r.Matches)
+                .HasForeignKey(e => e.RefereeId); ;
+
+            });
+
+            modelBuilder.Entity<Referee>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.FirstName).HasMaxLength(50);
+                entity.Property(e => e.LastName).HasMaxLength(50);
+                entity.Property(e => e.LicenseNumber).HasMaxLength(20);
+                entity.HasIndex(e=> e.LicenseNumber).IsUnique();
             });
         }
 

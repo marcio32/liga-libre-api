@@ -17,7 +17,6 @@ public class PlayersController(IPlayerService playerService, IValidator<CreatePl
     [Route("GetAllPlayers")]
     public async Task<IActionResult> GetAllPlayers()
     {
-        throw new Exception("Error de prueba");
         var players = await playerService.GetAllPlayers();
         return Ok(players);
     }

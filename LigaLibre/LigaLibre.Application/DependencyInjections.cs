@@ -16,6 +16,7 @@ namespace LigaLibre.Application
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<IValidator<CreatePlayerDto>, CreatePlayerValidator>();
             services.AddScoped<IValidator<CreateClubDto>, CreateClubValidator>();
+            services.AddScoped<IMatchService, MatchService>();
             return services;
         }
     }
