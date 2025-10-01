@@ -2,7 +2,6 @@
 using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LigaLibre.API.Controllers;

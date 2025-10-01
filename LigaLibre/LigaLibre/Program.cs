@@ -108,6 +108,8 @@ namespace LigaLibre
             app.MapControllers();
 
             app.UseMiddleware<ErrorLoggingMiddleware>();
+            app.UseMiddleware<RateLimitingMiddleware>();
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
             app.Run();
         }
