@@ -12,6 +12,6 @@ namespace LigaLibre.Domain.Enums
         Inprogress = 1,
         Finished = 2,
         Postponed = 3,
-        Canceled = 4
+        Cancelled = 4
     }
 }

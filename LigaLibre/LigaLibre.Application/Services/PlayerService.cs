@@ -54,7 +54,7 @@ public class PlayerService(IPlayerRepository playerRepository) : IPlayerService
 
         if (existingPlayer == null)
         {
-            return null;
+            return new PlayerDto();
         }
 
         existingPlayer.Age = playerDto.Age;

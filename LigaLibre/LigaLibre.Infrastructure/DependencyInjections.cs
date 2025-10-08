@@ -1,4 +1,5 @@
-﻿using LigaLibre.Application.Interfaces;
+﻿using Amazon.SQS;
+using LigaLibre.Application.Interfaces;
 using LigaLibre.Domain.Entities;
 using LigaLibre.Domain.Interfaces;
 using LigaLibre.Infrastructure.Data;
@@ -19,6 +20,14 @@ namespace LigaLibre.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+            //Redis Cache 
+            var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6349";
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnection;
+                options.InstanceName = "LigaLibreAPI";
+            });
+
             //Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -35,8 +44,21 @@ namespace LigaLibre.Infrastructure
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
 
+            //AWS SQS
+            services.AddSingleton<IAmazonSQS>(provider =>
+            {
+                var config = new AmazonSQSConfig
+                {
+                    ServiceURL = "http://localhost:4566",
+                    UseHttp = true
+                };
+                return new AmazonSQSClient("test", "test", config);
+            });
+
             //Services
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISqsService, SqsService>();
+            services.AddScoped<IRedisCacheService, RedisCacheService>();
 
             return services;
         }

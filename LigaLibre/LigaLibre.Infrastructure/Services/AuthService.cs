@@ -90,9 +90,9 @@ namespace LigaLibre.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new (ClaimTypes.NameIdentifier, user.Id),
-                new (ClaimTypes.Email, user.Email),
+                new (ClaimTypes.Email, user.Email ?? ""),
                 new (ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                new (ClaimTypes.Role, roles.FirstOrDefault())
+                new (ClaimTypes.Role, roles.FirstOrDefault() ?? "")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));

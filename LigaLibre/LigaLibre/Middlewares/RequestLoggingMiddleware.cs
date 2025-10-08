@@ -11,7 +11,7 @@ public class RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggi
 
         logger.LogInformation($"Iniciando {context.Request.Method} {context.Request.Path} " +
             $"- Usuario: {context.User?.Identity?.Name ?? "Anonimo"} " +
-            $"- IP : {context.Connection.RemoteIpAddress.ToString()}");
+            $"- IP : {context.Connection?.RemoteIpAddress?.ToString()}");
 
         await next(context);
 
