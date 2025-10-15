@@ -9,6 +9,6 @@ public interface IRefereeRepository
     Task<Referee?> GetByLicenseNumberAsync(string licenseNumber);
     Task<IEnumerable<Referee>> GetActivesAsync();
     Task<Referee> CreateAsync(Referee referee);
-    Task<Referee?> UpdateAsync(Referee referee);
+    Task<Referee> UpdateAsync(Referee referee);
     Task<bool> DeleteAsync(int id);
 }

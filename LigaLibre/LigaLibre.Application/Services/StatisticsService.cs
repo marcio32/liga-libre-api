@@ -7,10 +7,18 @@ using LigaLibre.Application.Interfaces;
 
 namespace LigaLibre.Application.Services;
 
-public class StatisticsService(IMatchRepository matchRepository, IPlayerRepository playerRepository, IClubRepository clubRepository) : IStatisticsService
+public class StatisticsService(IMatchRepository matchRepository, IPlayerRepository playerRepository, IClubRepository clubRepository, IRedisCacheService cacheService) : IStatisticsService
 {
+    /// <summary>
+    /// Obtiene las estadísticas generales de la liga
+    /// </summary>
+    /// <returns>DTO con estadísticas completas de la liga</returns>
     public async Task<LeagueStatisticsDto> GetLeaguesStatisticsDtoAsync()
     {
+        var cachedStats = await cacheService.GetAsync<LeagueStatisticsDto>("statistics:league");
+
+        if (cachedStats != null) return cachedStats;
+
         var matches = await matchRepository.GetAllAsync();
         var players = await playerRepository.GetAllAsync();
         var clubs = await clubRepository.GetAllAsync();
@@ -33,7 +41,7 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
 
         var standings = GetClubStandingsAsync(clubs, matches);
 
-        return new LeagueStatisticsDto
+        var leagueStats = new LeagueStatisticsDto
         {
             TotalMatches = matches.Count(),
             FinishedMatches = finishedMatches.Count(),
@@ -44,10 +52,22 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
             TopScorers = topScorers,
             Standings = standings
         };
+
+        if (leagueStats != null) await cacheService.SetAsync("statistics:league", leagueStats, TimeSpan.FromMinutes(5));
+
+        return leagueStats == null ? new LeagueStatisticsDto() : leagueStats;
     }
 
+    /// <summary>
+    /// Obtiene las estadísticas de los partidos
+    /// </summary>
+    /// <returns>DTO con estadísticas de partidos</returns>
     public async Task<MatchStatisticsDto> GetMatchesStatisticsDtoAsync()
     {
+        var cachedStats = await cacheService.GetAsync<MatchStatisticsDto>("statistics:matches");
+
+        if (cachedStats != null) return cachedStats;
+
         var matches = await matchRepository.GetAllAsync();
         var recentMatches = matches
             .Where(m => m.Status == MatchStatusEnum.Finished)
@@ -66,7 +86,7 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
         var totalMatches = matches.Count();
         var finishedMatches = matches.Count(m => m.Status == MatchStatusEnum.Finished);
 
-        return new MatchStatisticsDto
+        var matchStats = new MatchStatisticsDto
         {
             TotalMatches = totalMatches,
             FinishedMatches = finishedMatches,
@@ -77,11 +97,23 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
             CompletionPercentage = totalMatches > 0 ? (double)finishedMatches / totalMatches * 100 : 0,
             RecentMatches = recentMatches
         };
+
+        if (matchStats != null) await cacheService.SetAsync("statistics:matches", matchStats, TimeSpan.FromMinutes(5));
+
+        return matchStats == null ? new MatchStatisticsDto() : matchStats;
     }
 
 
+    /// <summary>
+    /// Obtiene las estadísticas de los jugadores
+    /// </summary>
+    /// <returns>DTO con estadísticas de jugadores</returns>
     public async Task<PlayerStatisticsDto> GetPlayersStatisticsDtoAsync()
     {
+        var cachedStats = await cacheService.GetAsync<PlayerStatisticsDto>("statistics:players");
+
+        if (cachedStats != null) return cachedStats;
+
         var players = await playerRepository.GetAllAsync();
 
         var topScorers = players
@@ -119,7 +151,7 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
                 TotalGoals = g.Sum(p => p.Goals),
             }).ToArray();
 
-        return new PlayerStatisticsDto
+        var playerStats = new PlayerStatisticsDto
         {
             TotalPlayers = players.Count(),
             ActivePlayers = players.Count(p => p.IsActive),
@@ -128,6 +160,10 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
             TopAssists = topAssists,
             PositionStats = positionStats
         };
+
+        if (playerStats != null) await cacheService.SetAsync("statistics:players", playerStats, TimeSpan.FromMinutes(5));
+
+        return playerStats == null ? new PlayerStatisticsDto() : playerStats;
     }
 
     public static ClubStadingsDto[] GetClubStandingsAsync(IEnumerable<Club> clubs, IEnumerable<Match> matches)

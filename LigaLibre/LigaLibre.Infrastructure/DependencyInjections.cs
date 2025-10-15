@@ -21,7 +21,7 @@ namespace LigaLibre.Infrastructure
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             //Redis Cache 
-            var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6349";
+            var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6379";
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnection;
@@ -43,6 +43,7 @@ namespace LigaLibre.Infrastructure
             services.AddScoped<IClubRepository, ClubRepository>();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
+            services.AddScoped<IRefereeRepository, RefereeRepository>();
 
             //AWS SQS
             services.AddSingleton<IAmazonSQS>(provider =>

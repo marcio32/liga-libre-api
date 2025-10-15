@@ -47,6 +47,8 @@ namespace LigaLibre.Infrastructure.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto register)
         {
+
+
             var existingUser = await _userManager.FindByEmailAsync(register.Email);
             if (existingUser != null)
                 throw new UnauthorizedAccessException("User already exists.");

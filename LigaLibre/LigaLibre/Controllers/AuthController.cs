@@ -24,6 +24,7 @@ namespace LigaLibre.API.Controllers
             return Ok(response);
         }
 
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto register)
         {

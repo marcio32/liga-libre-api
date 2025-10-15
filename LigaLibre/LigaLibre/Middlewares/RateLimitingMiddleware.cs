@@ -5,7 +5,7 @@ namespace LigaLibre.API.Middlewares;
 public class RateLimitingMiddleware(RequestDelegate next, ILogger<RateLimitingMiddleware> logger)
 {
     private static readonly ConcurrentDictionary<string, List<DateTime>> _request = new();
-    private readonly int _maxRequests = 10;
+    private readonly int _maxRequests = 1000;
     private readonly TimeSpan _timeWindow = TimeSpan.FromMinutes(1);
 
     public async Task InvokeAsync(HttpContext context)

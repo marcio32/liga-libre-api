@@ -22,4 +22,7 @@ public class QueueMessage
 public static class QueuNames
 {
     public const string ClubEvent = "Club-events";
+    public const string MatchEvent = "Match-events";
+    public const string PlayerEvent = "Player-events";
+    public const string RefereeEvent = "Referee-events";
 }

@@ -39,7 +39,7 @@ public class RefereeRepository(ApplicationDbContext context) : IRefereeRepositor
         return referee;
     }
 
-    public async Task<Referee?> UpdateAsync(Referee referee)
+    public async Task<Referee> UpdateAsync(Referee referee)
     {
         referee.UpdatedAt = DateTime.UtcNow;
         context.Referee.Update(referee);
