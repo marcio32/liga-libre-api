@@ -3,9 +3,9 @@ using LigaLibre.Application.DTOs;
 
 namespace LigaLibre.Application.Validators;
 
-public class CreateClubValidator : AbstractValidator<CreateClubDto>
+public class UpdateClubValidator : AbstractValidator<UpdateClubDto>
 {
-    public CreateClubValidator()
+    public UpdateClubValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("El nombre del club es requerido")

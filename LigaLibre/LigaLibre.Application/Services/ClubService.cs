@@ -1,10 +1,8 @@
-﻿using Amazon.Runtime.Internal.Util;
-using LigaLibre.Application.DTOs;
+﻿using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
 using LigaLibre.Domain.Entities;
 using LigaLibre.Domain.Interfaces;
-using System.Text.RegularExpressions;
-using static System.Reflection.Metadata.BlobBuilder;
+using Mapster;
 
 namespace LigaLibre.Application.Services;
 
@@ -51,16 +49,7 @@ public class ClubService(IClubRepository clubRepository, ISqsService sqsService,
     /// <returns>DTO del club creado</returns>
     public async Task<ClubDto> CreateClubAsync(CreateClubDto createClubDto)
     {
-        var club = new Club
-        {
-            Name = createClubDto.Name,
-            City = createClubDto.City,
-            Email = createClubDto.Email,
-            NumberOfPartners = createClubDto.NumberOfPartners,
-            Phone = createClubDto.Phone,
-            Address = createClubDto.Address,
-            StadiumName = createClubDto.StadiumName,
-        };
+        var club = createClubDto.Adapt<Club>();
 
         var createClub = await clubRepository.CreateAsync(club);
 
@@ -89,20 +78,14 @@ public class ClubService(IClubRepository clubRepository, ISqsService sqsService,
     /// <param name="id">Identificador del club a actualizar</param>
     /// <param name="createClubDto">Datos actualizados del club</param>
     /// <returns>DTO del club actualizado</returns>
-    public async Task<ClubDto> UpdateClubAsync(int id, CreateClubDto createClubDto)
+    public async Task<ClubDto> UpdateClubAsync(int id, UpdateClubDto createClubDto)
     {
         var existingClub = await clubRepository.GetByIdAsync(id);
         if (existingClub == null)
             throw new ArgumentException("Club not found");
 
 
-        existingClub.Name = createClubDto.Name;
-        existingClub.City = createClubDto.City;
-        existingClub.Email = createClubDto.Email;
-        existingClub.NumberOfPartners = createClubDto.NumberOfPartners;
-        existingClub.Phone = createClubDto.Phone;
-        existingClub.Address = createClubDto.Address;
-        existingClub.StadiumName = createClubDto.StadiumName;
+        createClubDto.Adapt(existingClub);
 
         var updatedClub = await clubRepository.UpdateAsync(existingClub);
 
@@ -147,21 +130,5 @@ public class ClubService(IClubRepository clubRepository, ISqsService sqsService,
 
         return await clubRepository.DeleteAsync(id);
     }
-
-    private static ClubDto MapToDto(Club club)
-    {
-        return new ClubDto
-        {
-            Id = club.Id,
-            Name = club.Name,
-            City = club.City,
-            Email = club.Email,
-            NumberOfPartners = club.NumberOfPartners,
-            Phone = club.Phone,
-            Address = club.Address,
-            StadiumName = club.StadiumName,
-        };
-    }
-
+    private static ClubDto MapToDto(Club club) => club.Adapt<ClubDto>();
 }
-

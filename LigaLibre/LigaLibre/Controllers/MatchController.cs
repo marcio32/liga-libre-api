@@ -1,4 +1,5 @@
-﻿using LigaLibre.Application.DTOs;
+﻿using FluentValidation;
+using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace LigaLibre.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class MatchController(IMatchService matchService) : ControllerBase
+public class MatchController(IMatchService matchService, IValidator<CreateMatchDto> createValidator, IValidator<UpdateMatchDto> updateValidator) : ControllerBase
 {
     [HttpGet]
     [Route("GetAllMatches")]
@@ -46,16 +47,16 @@ public class MatchController(IMatchService matchService) : ControllerBase
     [Route("CreateMatch")]
     public async Task<ActionResult<MatchDto>> CreateMatch(CreateMatchDto matchDto)
     {
-        var match = await matchService.CreateMatchAsync(matchDto);
-        return CreatedAtAction(nameof(GetMatchById), new { id = match.Id }, match);
+        var validationResult = await createValidator.ValidateAsync(matchDto);
+        return validationResult.IsValid ? StatusCode(201, await matchService.CreateMatchAsync(matchDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpPut]
     [Route("UpdateMatch")]
     public async Task<ActionResult<MatchDto>> UpdateMatch(int id, UpdateMatchDto matchDto)
     {
-        var match = await matchService.UpdateMatchAsync(id, matchDto);
-        return match != null ? Ok(match) : NotFound();
+        var validationResult = await updateValidator.ValidateAsync(matchDto);
+        return validationResult.IsValid ? Ok(await matchService.UpdateMatchAsync(id, matchDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]

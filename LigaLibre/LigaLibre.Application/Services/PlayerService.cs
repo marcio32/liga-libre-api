@@ -2,7 +2,7 @@
 using LigaLibre.Application.Interfaces;
 using LigaLibre.Domain.Entities;
 using LigaLibre.Domain.Interfaces;
-using System.Text.RegularExpressions;
+using Mapster;
 
 namespace LigaLibre.Application.Services;
 
@@ -70,21 +70,7 @@ public class PlayerService(IPlayerRepository playerRepository, IRedisCacheServic
     /// <returns>DTO del jugador creado</returns>
     public async Task<PlayerDto> CreatePlayerAsync(CreatePlayerDto playerDto)
     {
-        var player = new Player
-        {
-            Age = playerDto.Age,
-            JerseuNumber = playerDto.JerseyNumber,
-            FirstName = playerDto.FirstName,
-            LastName = playerDto.LastName,
-            Position = playerDto.Position,
-            Nationality = playerDto.Nationality,
-            Height = playerDto.Height,
-            Weight = playerDto.Weight,
-            ClubId = playerDto.ClubId,
-            DateOfBirth = playerDto.DateOfBirth,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+        var player = playerDto.Adapt<Player>();
 
         var createdPlayer = await playerRepository.CreateAsync(player);
 
@@ -113,7 +99,7 @@ public class PlayerService(IPlayerRepository playerRepository, IRedisCacheServic
     /// <param name="id">Identificador del jugador a actualizar</param>
     /// <param name="playerDto">Datos actualizados del jugador</param>
     /// <returns>DTO del jugador actualizado</returns>
-    public async Task<PlayerDto> UpdatePlayerAsync(int id, CreatePlayerDto playerDto)
+    public async Task<PlayerDto> UpdatePlayerAsync(int id, UpdatePlayerDto playerDto)
     {
         var existingPlayer = await playerRepository.GetByIdAsync(id);
 
@@ -124,17 +110,7 @@ public class PlayerService(IPlayerRepository playerRepository, IRedisCacheServic
 
         var oldClubId = existingPlayer.ClubId;
 
-        existingPlayer.Age = playerDto.Age;
-        existingPlayer.JerseuNumber = playerDto.JerseyNumber;
-        existingPlayer.FirstName = playerDto.FirstName;
-        existingPlayer.LastName = playerDto.LastName;
-        existingPlayer.Position = playerDto.Position;
-        existingPlayer.Nationality = playerDto.Nationality;
-        existingPlayer.Height = playerDto.Height;
-        existingPlayer.Weight = playerDto.Weight;
-        existingPlayer.ClubId = playerDto.ClubId;
-        existingPlayer.DateOfBirth = playerDto.DateOfBirth;
-        existingPlayer.UpdatedAt = DateTime.UtcNow;
+        playerDto.Adapt(existingPlayer);
 
         var updatedPlayer = await playerRepository.UpdateAsync(existingPlayer);
 
@@ -177,29 +153,6 @@ public class PlayerService(IPlayerRepository playerRepository, IRedisCacheServic
         return await playerRepository.DeleteAsync(id);
     }
 
-    private static PlayerDto MapToDto(Player player) => new PlayerDto
-    {
-        Id = player.Id,
-        Age = player.Age,
-        JerseuNumber = player.JerseuNumber,
-        FirstName = player.FirstName,
-        LastName = player.LastName,
-        Position = player.Position,
-        Nationality = player.Nationality,
-        Height = player.Height,
-        Weight = player.Weight,
-        Goals = player.Goals,
-        Assists = player.Assists,
-        YellowCards = player.YellowCards,
-        RedCards = player.RedCards,
-        MatchesPlayed = player.MatchesPlayed,
-        ClubId = player.ClubId,
-        IsActive = player.IsActive,
-        DateOfBirth = player.DateOfBirth,
-        JoinedClubDate = player.JoinedClubDate,
-        CreatedAt = player.CreatedAt,
-        UpdatedAt = player.UpdatedAt
-    };
+    private static PlayerDto MapToDto(Player player) => player.Adapt<PlayerDto>();
 
 }
-

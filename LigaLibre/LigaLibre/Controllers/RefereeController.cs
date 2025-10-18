@@ -1,4 +1,5 @@
-﻿using LigaLibre.Application.DTOs;
+﻿using FluentValidation;
+using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace LigaLibre.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class RefereeController(IRefereeService refereeService) : ControllerBase
+public class RefereeController(IRefereeService refereeService, IValidator<CreateRefereeDto> createValidator, IValidator<UpdateRefereeDto> updateValidator) : ControllerBase
 {
 
     [HttpGet]
@@ -39,16 +40,16 @@ public class RefereeController(IRefereeService refereeService) : ControllerBase
     [Route("CreateReferee")]
     public async Task<IActionResult> CreateReferee([FromBody] CreateRefereeDto createRefereeDto)
     {
-        var referee = await refereeService.CreateRefereeAsync(createRefereeDto);
-        return CreatedAtAction(nameof(GetRefereesById), new { id = referee.Id }, referee);
+        var validationResult = await createValidator.ValidateAsync(createRefereeDto);
+        return validationResult.IsValid ? StatusCode(201, await refereeService.CreateRefereeAsync(createRefereeDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpPut]
     [Route("UpdateReferee")]
     public async Task<IActionResult> UpdateReferee(int id, [FromBody] UpdateRefereeDto updateRefereeDto)
     {
-        var referee = await refereeService.UpdateRefereeAsync(id, updateRefereeDto);
-        return Ok(referee);
+        var validationResult = await updateValidator.ValidateAsync(updateRefereeDto);
+        return validationResult.IsValid ? Ok(await refereeService.UpdateRefereeAsync(id, updateRefereeDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]

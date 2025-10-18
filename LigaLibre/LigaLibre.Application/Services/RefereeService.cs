@@ -2,7 +2,7 @@
 using LigaLibre.Application.Interfaces;
 using LigaLibre.Domain.Entities;
 using LigaLibre.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Mapster;
 
 namespace LigaLibre.Application.Services;
 
@@ -66,13 +66,7 @@ public class RefereeService(IRefereeRepository refereeRepository, ISqsService sq
         var existingReferee = await refereeRepository.GetByLicenseNumberAsync(createRefereeDto.LicenseNumber);
         if (existingReferee != null) throw new ArgumentException("Ya existe un arbitro con esa licencia");
 
-        var referee = new Referee
-        {
-            FirstName = createRefereeDto.FirstName,
-            LastName = createRefereeDto.LastName,
-            LicenseNumber = createRefereeDto.LicenseNumber,
-            Category = createRefereeDto.Category
-        };
+        var referee = createRefereeDto.Adapt<Referee>();
 
         var createdReferee = await refereeRepository.CreateAsync(referee);
 
@@ -96,11 +90,7 @@ public class RefereeService(IRefereeRepository refereeRepository, ISqsService sq
         var existingReferee = await refereeRepository.GetByIdAsync(id);
         if (existingReferee == null) return null;
 
-        existingReferee.FirstName = createRefereeDto.FirstName;
-        existingReferee.LastName = createRefereeDto.LastName;
-        existingReferee.LicenseNumber = createRefereeDto.LicenseNumber;
-        existingReferee.Category = createRefereeDto.Category;
-        existingReferee.IsActive = createRefereeDto.IsActive;
+        createRefereeDto.Adapt(existingReferee);
 
         var updatedReferee = await refereeRepository.UpdateAsync(existingReferee);
 
@@ -140,18 +130,5 @@ public class RefereeService(IRefereeRepository refereeRepository, ISqsService sq
         return await refereeRepository.DeleteAsync(id);
     }
 
-    private static RefereeDto MapToDto(Referee referee)
-    {
-        return new RefereeDto
-        {
-            Id = referee.Id,
-            FirstName = referee.FirstName,
-            LastName = referee.LastName,
-            LicenseNumber = referee.LicenseNumber,
-            Category = referee.Category,
-            IsActive = referee.IsActive,
-            CreatedAt = referee.CreatedAt,
-            UpdatedAt = referee.UpdatedAt
-        };
-    }
+    private static RefereeDto MapToDto(Referee referee) => referee.Adapt<RefereeDto>();
 }

@@ -9,7 +9,7 @@ namespace LigaLibre.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class PlayersController(IPlayerService playerService, IValidator<CreatePlayerDto> validator) : ControllerBase
+public class PlayersController(IPlayerService playerService, IValidator<CreatePlayerDto> createValidator, IValidator<UpdatePlayerDto> updateValidator) : ControllerBase
 {
 
     [HttpGet]
@@ -43,15 +43,15 @@ public class PlayersController(IPlayerService playerService, IValidator<CreatePl
     [Route("CreatePlayer")]
     public async Task<IActionResult> CreatePlayer(CreatePlayerDto createPlayerDto)
     {
-        var validationResult = await validator.ValidateAsync(createPlayerDto);
+        var validationResult = await createValidator.ValidateAsync(createPlayerDto);
         return validationResult.IsValid ? StatusCode(201, await playerService.CreatePlayerAsync(createPlayerDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpPut]
     [Route("UpdatePlayer")]
-    public async Task<IActionResult> UpdatePlayer(int id, CreatePlayerDto createPlayerDto)
+    public async Task<IActionResult> UpdatePlayer(int id, UpdatePlayerDto createPlayerDto)
     {
-        var validationResult = await validator.ValidateAsync(createPlayerDto);
+        var validationResult = await updateValidator.ValidateAsync(createPlayerDto);
         return validationResult.IsValid ? Ok(await playerService.UpdatePlayerAsync(id, createPlayerDto)) : BadRequest(validationResult.Errors);
     }
 

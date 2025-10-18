@@ -12,12 +12,14 @@ public class ClubControllerTests
 {
     private readonly Mock<IClubService> _mockService;
     private readonly Mock<IValidator<CreateClubDto>> _mockValidator;
+    private readonly Mock<IValidator<UpdateClubDto>> _mockUpdateValidator;
     private readonly ClubController _controller;
     public ClubControllerTests()
     {
         _mockService = new Mock<IClubService>();
         _mockValidator = new Mock<IValidator<CreateClubDto>>();
-        _controller = new ClubController(_mockService.Object, _mockValidator.Object);
+        _mockUpdateValidator = new Mock<IValidator<UpdateClubDto>>();
+        _controller = new ClubController(_mockService.Object, _mockValidator.Object, _mockUpdateValidator.Object);
     }
 
 
@@ -91,7 +93,59 @@ public class ClubControllerTests
         Assert.Single(errors);
         Assert.Equal("Name", errors[0].PropertyName);
         Assert.Equal("Name is required", errors[0].ErrorMessage);
+    }
 
+    /// <summary>
+    /// Verifica que GetAll retorna Ok con lista de clubes
+    /// </summary>
+    [Fact]
+    public async Task GetAll_ReturnsOk()
+    {
+        //Arrange
+        var clubs = new List<ClubDto> { new ClubDto { Id = 1, Name = "Boca" } };
+        _mockService.Setup(s => s.GetAllClubsAsync()).ReturnsAsync(clubs);
+
+        //Act
+        var result = await _controller.GetAll();
+
+        //Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(clubs, okResult.Value);
+    }
+
+    /// <summary>
+    /// Verifica que UpdateClub con datos válidos retorna Ok
+    /// </summary>
+    [Fact]
+    public async Task UpdateClub_ValidDto_ReturnsOk()
+    {
+        //Arrange
+        var updateDto = new UpdateClubDto { Name = "River" };
+        var clubDto = new ClubDto { Id = 1, Name = "River" };
+        _mockUpdateValidator.Setup(v => v.ValidateAsync(updateDto, default)).ReturnsAsync(new ValidationResult());
+        _mockService.Setup(s => s.UpdateClubAsync(1, updateDto)).ReturnsAsync(clubDto);
+
+        //Act
+        var result = await _controller.UpdateClub(1, updateDto);
+
+        //Assert
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    /// <summary>
+    /// Verifica que Delete retorna Ok
+    /// </summary>
+    [Fact]
+    public async Task Delete_ReturnsOk()
+    {
+        //Arrange
+        _mockService.Setup(s => s.DeleteClubAsync(1)).ReturnsAsync(true);
+
+        //Act
+        var result = await _controller.Delete(1);
+
+        //Assert
+        Assert.IsType<OkObjectResult>(result);
     }
 }
         

@@ -9,7 +9,7 @@ namespace LigaLibre.API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ClubController(IClubService clubService, IValidator<CreateClubDto> validator) : ControllerBase
+public class ClubController(IClubService clubService, IValidator<CreateClubDto> createValidator, IValidator<UpdateClubDto> updateValidator) : ControllerBase
 {
 
     [HttpGet]
@@ -32,15 +32,15 @@ public class ClubController(IClubService clubService, IValidator<CreateClubDto> 
     [Route("CreateClub")]
     public async Task<IActionResult> CreateClub(CreateClubDto createClubDto)
     {
-        var validationResult = await validator.ValidateAsync(createClubDto);
+        var validationResult = await createValidator.ValidateAsync(createClubDto);
         return validationResult.IsValid ? StatusCode(201, await clubService.CreateClubAsync(createClubDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpPut]
     [Route("UpdateClub")]
-    public async Task<IActionResult> UpdateClub(int id, CreateClubDto createClubDto)
+    public async Task<IActionResult> UpdateClub(int id, UpdateClubDto createClubDto)
     {
-        var validationResult = await validator.ValidateAsync(createClubDto);
+        var validationResult = await updateValidator.ValidateAsync(createClubDto);
         return validationResult.IsValid ? Ok(await clubService.UpdateClubAsync(id, createClubDto)) : BadRequest(validationResult.Errors);
     }
 

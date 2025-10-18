@@ -4,6 +4,7 @@ using LigaLibre.Domain.Enums;
 using static LigaLibre.Application.DTOs.LeagueStatisticsDto;
 using LigaLibre.Domain.Entities;
 using LigaLibre.Application.Interfaces;
+using Mapster;
 
 namespace LigaLibre.Application.Services;
 
@@ -30,14 +31,7 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
             .Where(p => p.Goals > 0)
             .OrderByDescending(p => p.Goals)
             .Take(10)
-            .Select(p => new TopScorersDto
-            {
-                PlayerName = $"{p.FirstName} {p.LastName}",
-                ClubName = p.Club?.Name ?? "Sin Club",
-                Goals = p.Goals,
-                Assists = p.Assists,
-                MatchesPlayed = p.MatchesPlayed
-            }).ToArray();
+            .Select(p => p.Adapt<TopScorersDto>()).ToArray();
 
         var standings = GetClubStandingsAsync(clubs, matches);
 
@@ -73,15 +67,7 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
             .Where(m => m.Status == MatchStatusEnum.Finished)
             .OrderByDescending(m => m.MatchDate)
             .Take(10)
-            .Select(m => new RecentMatchDto
-            {
-                HomeClub = m.HomeClub?.Name ?? "TBD",
-                AwayClub = m.AwayClub?.Name ?? "TBD",
-                HomeScore = m.HomeScore,
-                AwayScore = m.AwayScore,
-                MatchDate = m.MatchDate,
-                status = m.Status.ToString()
-            }).ToArray();
+            .Select(m => m.Adapt<RecentMatchDto>()).ToArray();
 
         var totalMatches = matches.Count();
         var finishedMatches = matches.Count(m => m.Status == MatchStatusEnum.Finished);
@@ -120,36 +106,17 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
             .Where(p => p.Goals > 0)
             .OrderByDescending(p => p.Goals)
             .Take(10)
-            .Select(p => new TopScorersDto
-            {
-                PlayerName = $"{p.FirstName} {p.LastName}",
-                ClubName = p.Club?.Name ?? "Sin Club",
-                Goals = p.Goals,
-                Assists = p.Assists,
-                MatchesPlayed = p.MatchesPlayed
-            }).ToArray();
+            .Select(p => p.Adapt<TopScorersDto>()).ToArray();
 
         var topAssists = players
             .Where(p => p.Assists > 0)
             .OrderByDescending(p => p.Assists)
             .Take(10)
-            .Select(p => new TopAssistsDto
-            {
-                PlayerName = $"{p.FirstName} {p.LastName}",
-                ClubName = p.Club?.Name ?? "Sin Club",
-                Goals = p.Goals,
-                Assists = p.Assists,
-            }).ToArray();
+            .Select(p => p.Adapt<TopAssistsDto>()).ToArray();
 
         var positionStats = players
             .GroupBy(p => p.Position)
-            .Select(g => new PositionStatsDto
-            {
-                Position = g.Key,
-                playerCount = g.Count(),
-                AverageAge = g.Average(p => p.Age),
-                TotalGoals = g.Sum(p => p.Goals),
-            }).ToArray();
+            .Select(g => g.Adapt<PositionStatsDto>()).ToArray();
 
         var playerStats = new PlayerStatisticsDto
         {
@@ -168,7 +135,7 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
 
     public static ClubStadingsDto[] GetClubStandingsAsync(IEnumerable<Club> clubs, IEnumerable<Match> matches)
     {
-        var standings = clubs.Select(club =>
+        return clubs.Select(club =>
         {
             var homeMatches = matches.Where(m => m.HomeClubId == club.Id && m.Status == MatchStatusEnum.Finished);
             var awayMatches = matches.Where(m => m.AwayClubId == club.Id && m.Status == MatchStatusEnum.Finished);
@@ -205,8 +172,6 @@ public class StatisticsService(IMatchRepository matchRepository, IPlayerReposito
          .ThenByDescending(s => s.GoalsDifference)
          .ThenByDescending(s => s.GoalsFor)
          .ToArray();
-
-        return standings;
     }
 }
 

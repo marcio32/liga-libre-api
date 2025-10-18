@@ -2,9 +2,9 @@
 using LigaLibre.Application.Interfaces;
 using LigaLibre.Domain.Entities;
 using LigaLibre.Domain.Interfaces;
+using Mapster;
 
 namespace LigaLibre.Application.Services;
-
 public class MatchService(IMatchRepository matchRepository, IRedisCacheService cacheService, ISqsService sqsService) : IMatchService
 {
     /// <summary>
@@ -88,18 +88,7 @@ public class MatchService(IMatchRepository matchRepository, IRedisCacheService c
     /// <returns>DTO del partido creado</returns>
     public async Task<MatchDto> CreateMatchAsync(CreateMatchDto matchDto)
     {
-        var match = new Match
-        {
-            Round = matchDto.Round,
-            HomeClubId = matchDto.HomeClubId,
-            AwayClubId = matchDto.AwayClubId,
-            Stadium = matchDto.Stadium.ToString(),
-            RefereeId = matchDto.RefereeId,
-            Notes = matchDto.Notes,
-            MatchDate = matchDto.MatchDate,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+        var match = matchDto.Adapt<Match>();
         
         var createdMatch = await matchRepository.CreateAsync(match);
 
@@ -130,17 +119,7 @@ public class MatchService(IMatchRepository matchRepository, IRedisCacheService c
         var existingMatch = await matchRepository.GetByIdAsync(id);
         if (existingMatch == null) return null;
 
-        existingMatch.HomeScore = matchDto.HomeScore;
-        existingMatch.AwayScore = matchDto.AwayScore;
-        existingMatch.Round = matchDto.Round;
-        existingMatch.HomeClubId = matchDto.HomeClubId;
-        existingMatch.AwayClubId = matchDto.AwayClubId;
-        existingMatch.Stadium = matchDto.Stadium.ToString();
-        existingMatch.RefereeId = matchDto.RefereeId;
-        existingMatch.Notes = matchDto.Notes;
-        existingMatch.Status = matchDto.Status;
-        existingMatch.MatchDate = matchDto.MatchDate;
-        existingMatch.UpdatedAt = DateTime.UtcNow;
+        matchDto.Adapt(existingMatch);
 
         var updatedMatch = await matchRepository.UpdateAsync(existingMatch);
 
@@ -185,21 +164,5 @@ public class MatchService(IMatchRepository matchRepository, IRedisCacheService c
         return await matchRepository.DeleteAsync(id);
     }
 
-    private static MatchDto MapToDto(Match match) => new MatchDto
-    {
-        Id = match.Id,
-        HomeClubId = match.HomeClubId,
-        HomeClubName = match.HomeClub?.Name ?? string.Empty,
-        AwayClubId = match.AwayClubId,
-        AwayClubName = match.AwayClub?.Name ?? string.Empty,
-        RefereeId = match.RefereeId,
-        RefereeName = match.Referee != null ? $"{match.Referee.FirstName} {match.Referee.LastName}" : null,
-        MatchDate = match.MatchDate,
-        Round = match.Round,
-        HomeScore = match.HomeScore,
-        AwayScore = match.AwayScore,
-        Status = match.Status,
-        Notes = match.Notes
-    };
+    private static MatchDto MapToDto(Match match) => match.Adapt<MatchDto>();
 }
-
