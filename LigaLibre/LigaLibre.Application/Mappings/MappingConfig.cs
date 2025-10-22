@@ -18,7 +18,9 @@ public static class MappingConfig
             .Map(dest => dest.CreatedAt, src => DateTime.UtcNow);
 
         // PLayer Mappings
-        config.NewConfig<Player, PlayerDto>();
+        config.NewConfig<Player, PlayerDto>().
+            Map(dest => dest.JerseyNumber, src => src.JerseuNumber)
+            ;
         config.NewConfig<CreatePlayerDto, Player>()
             .Map(dest => dest.IsActive, src => true)
             .Map(dest => dest.CreatedAt, src => DateTime.UtcNow);

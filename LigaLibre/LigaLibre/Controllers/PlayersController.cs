@@ -49,10 +49,10 @@ public class PlayersController(IPlayerService playerService, IValidator<CreatePl
 
     [HttpPut]
     [Route("UpdatePlayer")]
-    public async Task<IActionResult> UpdatePlayer(int id, UpdatePlayerDto createPlayerDto)
+    public async Task<IActionResult> UpdatePlayer(UpdatePlayerDto createPlayerDto)
     {
         var validationResult = await updateValidator.ValidateAsync(createPlayerDto);
-        return validationResult.IsValid ? Ok(await playerService.UpdatePlayerAsync(id, createPlayerDto)) : BadRequest(validationResult.Errors);
+        return validationResult.IsValid ? Ok(await playerService.UpdatePlayerAsync(createPlayerDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]

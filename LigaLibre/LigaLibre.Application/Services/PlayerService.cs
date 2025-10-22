@@ -99,9 +99,9 @@ public class PlayerService(IPlayerRepository playerRepository, IRedisCacheServic
     /// <param name="id">Identificador del jugador a actualizar</param>
     /// <param name="playerDto">Datos actualizados del jugador</param>
     /// <returns>DTO del jugador actualizado</returns>
-    public async Task<PlayerDto> UpdatePlayerAsync(int id, UpdatePlayerDto playerDto)
+    public async Task<PlayerDto> UpdatePlayerAsync(UpdatePlayerDto playerDto)
     {
-        var existingPlayer = await playerRepository.GetByIdAsync(id);
+        var existingPlayer = await playerRepository.GetByIdAsync(playerDto.Id);
 
         if (existingPlayer == null)
         {

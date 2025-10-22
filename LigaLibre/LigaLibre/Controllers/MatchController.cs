@@ -53,10 +53,10 @@ public class MatchController(IMatchService matchService, IValidator<CreateMatchD
 
     [HttpPut]
     [Route("UpdateMatch")]
-    public async Task<ActionResult<MatchDto>> UpdateMatch(int id, UpdateMatchDto matchDto)
+    public async Task<ActionResult<MatchDto>> UpdateMatch(UpdateMatchDto matchDto)
     {
         var validationResult = await updateValidator.ValidateAsync(matchDto);
-        return validationResult.IsValid ? Ok(await matchService.UpdateMatchAsync(id, matchDto)) : BadRequest(validationResult.Errors);
+        return validationResult.IsValid ? Ok(await matchService.UpdateMatchAsync(matchDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]

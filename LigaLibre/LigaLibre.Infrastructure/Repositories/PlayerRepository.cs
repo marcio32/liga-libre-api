@@ -9,7 +9,7 @@ public class PlayerRepository(ApplicationDbContext context) : IPlayerRepository
 {
     public async Task<IEnumerable<Player>> GetAllAsync()
     {
-        return await context.Player.Include(p => p.Club).ToListAsync();
+        return await context.Player.Where(p => p.IsActive).Include(p => p.Club).ToListAsync();
     }
 
     public async Task<Player?> GetByIdAsync(int id)

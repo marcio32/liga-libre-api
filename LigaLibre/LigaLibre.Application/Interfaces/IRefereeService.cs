@@ -10,6 +10,6 @@ namespace LigaLibre.Application.Interfaces
         Task<IEnumerable<RefereeDto>> GetAllRefereesAsync();
         Task<RefereeDto?> GetRefereeByIdAsync(int id);
         Task<RefereeDto?> GetRefereeByLicenseNumberAsync(string licenseNumber);
-        Task<RefereeDto?> UpdateRefereeAsync(int id, UpdateRefereeDto createRefereeDto);
+        Task<RefereeDto?> UpdateRefereeAsync(UpdateRefereeDto createRefereeDto);
     }
 }

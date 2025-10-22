@@ -38,10 +38,10 @@ public class ClubController(IClubService clubService, IValidator<CreateClubDto> 
 
     [HttpPut]
     [Route("UpdateClub")]
-    public async Task<IActionResult> UpdateClub(int id, UpdateClubDto createClubDto)
+    public async Task<IActionResult> UpdateClub(UpdateClubDto createClubDto)
     {
         var validationResult = await updateValidator.ValidateAsync(createClubDto);
-        return validationResult.IsValid ? Ok(await clubService.UpdateClubAsync(id, createClubDto)) : BadRequest(validationResult.Errors);
+        return validationResult.IsValid ? Ok(await clubService.UpdateClubAsync(createClubDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]

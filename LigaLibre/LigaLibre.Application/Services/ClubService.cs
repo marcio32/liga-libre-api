@@ -78,9 +78,9 @@ public class ClubService(IClubRepository clubRepository, ISqsService sqsService,
     /// <param name="id">Identificador del club a actualizar</param>
     /// <param name="createClubDto">Datos actualizados del club</param>
     /// <returns>DTO del club actualizado</returns>
-    public async Task<ClubDto> UpdateClubAsync(int id, UpdateClubDto createClubDto)
+    public async Task<ClubDto> UpdateClubAsync(UpdateClubDto createClubDto)
     {
-        var existingClub = await clubRepository.GetByIdAsync(id);
+        var existingClub = await clubRepository.GetByIdAsync(createClubDto.Id);
         if (existingClub == null)
             throw new ArgumentException("Club not found");
 

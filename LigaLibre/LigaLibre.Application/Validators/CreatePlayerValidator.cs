@@ -34,10 +34,6 @@ namespace LigaLibre.Application.Validators
             RuleFor(x => x.Height)
                 .GreaterThan(1.50m).WithMessage("La altura minima es 1.40m")
                 .LessThan(2.20m).WithMessage("La altura maxima es 2.20m");
-
-            RuleFor(x => x.DateOfBirth)
-                .LessThan(DateTime.Now.AddYears(-16)).WithMessage("Debe ser mayor de 16 años");
-
         }
 
         private static bool BeValidPosition(string position)

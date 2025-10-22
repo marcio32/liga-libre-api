@@ -46,10 +46,10 @@ public class RefereeController(IRefereeService refereeService, IValidator<Create
 
     [HttpPut]
     [Route("UpdateReferee")]
-    public async Task<IActionResult> UpdateReferee(int id, [FromBody] UpdateRefereeDto updateRefereeDto)
+    public async Task<IActionResult> UpdateReferee([FromBody] UpdateRefereeDto updateRefereeDto)
     {
         var validationResult = await updateValidator.ValidateAsync(updateRefereeDto);
-        return validationResult.IsValid ? Ok(await refereeService.UpdateRefereeAsync(id, updateRefereeDto)) : BadRequest(validationResult.Errors);
+        return validationResult.IsValid ? Ok(await refereeService.UpdateRefereeAsync(updateRefereeDto)) : BadRequest(validationResult.Errors);
     }
 
     [HttpDelete]

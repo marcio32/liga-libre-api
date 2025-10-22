@@ -9,6 +9,6 @@ public interface IMatchService
     Task<IEnumerable<MatchDto>> GetMatchesByClubAsync(int clubId);
     Task<IEnumerable<MatchDto>> GetMatchesByRoundAsync(int round);
     Task<MatchDto> CreateMatchAsync(CreateMatchDto matchDto);
-    Task<MatchDto?> UpdateMatchAsync(int id, UpdateMatchDto matchDto);
+    Task<MatchDto?> UpdateMatchAsync(UpdateMatchDto matchDto);
     Task<bool> DeleteMatchAsync(int id);
 }

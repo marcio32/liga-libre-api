@@ -85,9 +85,9 @@ public class RefereeService(IRefereeRepository refereeRepository, ISqsService sq
         return MapToDto(createdReferee);
     }
 
-    public async Task<RefereeDto?> UpdateRefereeAsync(int id, UpdateRefereeDto createRefereeDto)
+    public async Task<RefereeDto?> UpdateRefereeAsync(UpdateRefereeDto createRefereeDto)
     {
-        var existingReferee = await refereeRepository.GetByIdAsync(id);
+        var existingReferee = await refereeRepository.GetByIdAsync(createRefereeDto.Id);
         if (existingReferee == null) return null;
 
         createRefereeDto.Adapt(existingReferee);
@@ -105,7 +105,7 @@ public class RefereeService(IRefereeRepository refereeRepository, ISqsService sq
             Timestamp = DateTime.UtcNow
         }, QueuNames.RefereeEvent, 0);
 
-        await cacheService.RemoveAsync($"referees:{id}");
+        await cacheService.RemoveAsync($"referees:{createRefereeDto.Id}");
         await cacheService.RemoveAsync("referees:all");
         await cacheService.RemoveAsync("referees:active");
 

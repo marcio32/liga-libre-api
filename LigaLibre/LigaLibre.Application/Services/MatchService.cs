@@ -114,9 +114,9 @@ public class MatchService(IMatchRepository matchRepository, IRedisCacheService c
     /// <param name="id">Identificador del partido a actualizar</param>
     /// <param name="matchDto">Datos actualizados del partido</param>
     /// <returns>DTO del partido actualizado o null si no existe</returns>
-    public async Task<MatchDto?> UpdateMatchAsync(int id, UpdateMatchDto matchDto)
+    public async Task<MatchDto?> UpdateMatchAsync(UpdateMatchDto matchDto)
     {
-        var existingMatch = await matchRepository.GetByIdAsync(id);
+        var existingMatch = await matchRepository.GetByIdAsync(matchDto.Id);
         if (existingMatch == null) return null;
 
         matchDto.Adapt(existingMatch);
