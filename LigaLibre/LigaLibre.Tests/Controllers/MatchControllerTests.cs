@@ -101,13 +101,13 @@ public class MatchControllerTests
     public async Task UpdateMatch_ValidDto_ReturnsOk()
     {
         //Arrange
-        var updateDto = new UpdateMatchDto { HomeClubId = 1 };
+        var updateDto = new UpdateMatchDto { Id = 1, HomeClubId = 1 };
         var matchDto = new MatchDto { Id = 1 };
         _mockUpdateValidator.Setup(v => v.ValidateAsync(updateDto, default)).ReturnsAsync(new ValidationResult());
-        _mockService.Setup(s => s.UpdateMatchAsync(1, updateDto)).ReturnsAsync(matchDto);
+        _mockService.Setup(s => s.UpdateMatchAsync(updateDto)).ReturnsAsync(matchDto);
 
         //Act
-        var result = await _controller.UpdateMatch(1, updateDto);
+        var result = await _controller.UpdateMatch(updateDto);
 
         //Assert
         Assert.IsType<OkObjectResult>(result.Result);

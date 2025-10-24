@@ -120,13 +120,13 @@ public class ClubControllerTests
     public async Task UpdateClub_ValidDto_ReturnsOk()
     {
         //Arrange
-        var updateDto = new UpdateClubDto { Name = "River" };
+        var updateDto = new UpdateClubDto { Id = 1, Name = "River" };
         var clubDto = new ClubDto { Id = 1, Name = "River" };
         _mockUpdateValidator.Setup(v => v.ValidateAsync(updateDto, default)).ReturnsAsync(new ValidationResult());
-        _mockService.Setup(s => s.UpdateClubAsync(1, updateDto)).ReturnsAsync(clubDto);
+        _mockService.Setup(s => s.UpdateClubAsync(updateDto)).ReturnsAsync(clubDto);
 
         //Act
-        var result = await _controller.UpdateClub(1, updateDto);
+        var result = await _controller.UpdateClub(updateDto);
 
         //Assert
         Assert.IsType<OkObjectResult>(result);

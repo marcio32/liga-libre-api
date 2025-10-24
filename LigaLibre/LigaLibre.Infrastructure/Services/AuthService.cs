@@ -1,6 +1,6 @@
 ﻿using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
-using LigaLibre.Domain.Entities;
+using LigaLibre.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

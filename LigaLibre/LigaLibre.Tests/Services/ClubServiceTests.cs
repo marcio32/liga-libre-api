@@ -104,13 +104,13 @@ public class ClubServiceTests
     public async Task UpdateClubAsync_UpdatesClubAndClearsCache()
     {
         //Arrange
-        var updateDto = new UpdateClubDto { Name = "River Plate" };
+        var updateDto = new UpdateClubDto { Id = 1, Name = "River Plate" };
         var club = new Club { Id = 1, Name = "River" };
         _mockRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(club);
         _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Club>())).ReturnsAsync(club);
 
         //Act
-        var result = await _service.UpdateClubAsync(1, updateDto);
+        var result = await _service.UpdateClubAsync(updateDto);
 
         //Assert
         Assert.NotNull(result);

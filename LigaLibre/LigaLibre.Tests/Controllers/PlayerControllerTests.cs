@@ -104,13 +104,13 @@ public class PlayerControllerTests
     public async Task UpdatePlayer_ValidDto_ReturnsOk()
     {
         //Arrange
-        var updateDto = new UpdatePlayerDto { FirstName = "Juan" };
+        var updateDto = new UpdatePlayerDto { Id = 1, FirstName = "Juan" };
         var playerDto = new PlayerDto { Id = 1, FirstName = "Juan" };
         _mockUpdateValidator.Setup(v => v.ValidateAsync(updateDto, default)).ReturnsAsync(new ValidationResult());
-        _mockService.Setup(s => s.UpdatePlayerAsync(1, updateDto)).ReturnsAsync(playerDto);
+        _mockService.Setup(s => s.UpdatePlayerAsync(updateDto)).ReturnsAsync(playerDto);
 
         //Act
-        var result = await _controller.UpdatePlayer(1, updateDto);
+        var result = await _controller.UpdatePlayer(updateDto);
 
         //Assert
         Assert.IsType<OkObjectResult>(result);

@@ -116,6 +116,7 @@ public class PlayerServiceTests
         //Arrange
         var updateDto = new UpdatePlayerDto
         {
+            Id = 1,
             FirstName = "Juan",
             LastName = "Perez",
             Age = 26,
@@ -132,7 +133,7 @@ public class PlayerServiceTests
         _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Player>())).ReturnsAsync(updatedPlayer);
 
         //Act
-        var result = await _service.UpdatePlayerAsync(1, updateDto);
+        var result = await _service.UpdatePlayerAsync(updateDto);
 
         //Assert
         Assert.NotNull(result);

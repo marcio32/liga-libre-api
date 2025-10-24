@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace LigaLibre.Domain.Entities
+namespace LigaLibre.Infrastructure.Identity
 {
     public class ApplicationUser : IdentityUser
     {

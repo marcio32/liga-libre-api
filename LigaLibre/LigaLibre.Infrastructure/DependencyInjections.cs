@@ -1,8 +1,8 @@
 ﻿using Amazon.SQS;
 using LigaLibre.Application.Interfaces;
-using LigaLibre.Domain.Entities;
 using LigaLibre.Domain.Interfaces;
 using LigaLibre.Infrastructure.Data;
+using LigaLibre.Infrastructure.Identity;
 using LigaLibre.Infrastructure.Repositories;
 using LigaLibre.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;

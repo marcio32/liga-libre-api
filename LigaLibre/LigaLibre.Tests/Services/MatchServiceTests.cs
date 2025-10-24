@@ -107,6 +107,7 @@ public class MatchServiceTests
         //Arrange
         var updateDto = new UpdateMatchDto
         {
+            Id = 1,
             HomeClubId = 1,
             AwayClubId = 2,
             HomeScore = 2,
@@ -117,7 +118,7 @@ public class MatchServiceTests
         _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<MatchEntity>())).ReturnsAsync(match);
 
         //Act
-        var result = await _service.UpdateMatchAsync(1, updateDto);
+        var result = await _service.UpdateMatchAsync(updateDto);
 
         //Assert
         Assert.NotNull(result);

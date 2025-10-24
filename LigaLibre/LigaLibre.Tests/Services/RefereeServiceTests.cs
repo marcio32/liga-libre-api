@@ -2,7 +2,6 @@ using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
 using LigaLibre.Application.Services;
 using LigaLibre.Domain.Entities;
-using LigaLibre.Domain.Enums;
 using LigaLibre.Domain.Interfaces;
 using Moq;
 
@@ -111,6 +110,7 @@ public class RefereeServiceTests
         //Arrange
         var updateDto = new UpdateRefereeDto
         {
+            Id = 1,
             FirstName = "Carlos",
             LastName = "Gomez",
             LicenseNumber = "LIC123",
@@ -121,7 +121,7 @@ public class RefereeServiceTests
         _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Referee>())).ReturnsAsync(referee);
 
         //Act
-        var result = await _service.UpdateRefereeAsync(1, updateDto);
+        var result = await _service.UpdateRefereeAsync(updateDto);
 
         //Assert
         Assert.NotNull(result);

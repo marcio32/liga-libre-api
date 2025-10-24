@@ -104,13 +104,13 @@ public class RefereeControllerTests
     public async Task UpdateReferee_ValidDto_ReturnsOk()
     {
         //Arrange
-        var updateDto = new UpdateRefereeDto { FirstName = "Carlos" };
+        var updateDto = new UpdateRefereeDto { Id = 1, FirstName = "Carlos" };
         var refereeDto = new RefereeDto { Id = 1, FirstName = "Carlos" };
         _mockUpdateValidator.Setup(v => v.ValidateAsync(updateDto, default)).ReturnsAsync(new ValidationResult());
-        _mockService.Setup(s => s.UpdateRefereeAsync(1, updateDto)).ReturnsAsync(refereeDto);
+        _mockService.Setup(s => s.UpdateRefereeAsync(updateDto)).ReturnsAsync(refereeDto);
 
         //Act
-        var result = await _controller.UpdateReferee(1, updateDto);
+        var result = await _controller.UpdateReferee(updateDto);
 
         //Assert
         Assert.IsType<OkObjectResult>(result);
