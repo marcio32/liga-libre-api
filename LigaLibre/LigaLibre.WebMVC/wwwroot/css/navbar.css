@@ -1,0 +1,40 @@
+.navbar-pastel {
+    background: linear-gradient(135deg, #29b6f6 0%, #ec407a 100%);
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    padding: 15px 0;
+}
+
+.navbar-pastel .navbar-brand {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar-pastel .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+.navbar-pastel .nav-link:hover {
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+.btn-logout {
+    background: rgba(255, 255, 255, 0.25);
+    border: 2px solid white;
+    color: white;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-logout:hover {
+    background: white;
+    color: #ec407a;
+    transform: scale(1.05);
+}

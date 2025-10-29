@@ -1,0 +1,73 @@
+body {
+    background: linear-gradient(135deg, #4fc3f7 0%, #ff6b9d 100%);
+    min-height: 100vh;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #29b6f6, #ec407a);
+    padding: 60px 0;
+    margin: 0px -15px 40px -15px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.hero-section p {
+    font-size: 1.3rem;
+    margin-bottom: 0;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #29b6f6, #ec407a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.feature-title {
+    color: #1e293b;
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.feature-description {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.stats-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #29b6f6, #ec407a);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(41, 182, 246, 0.3);
+}
