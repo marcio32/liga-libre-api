@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LigaLibre.Tests", "LigaLibr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LigaLibre.WebMVC", "LigaLibre.WebMVC\LigaLibre.WebMVC.csproj", "{E4540B0A-A6CA-4243-A282-48B19C4C643F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LigaLibre.EmailService", "LigaLibre.EmailService\LigaLibre.EmailService.csproj", "{307274CF-9DAD-4167-803E-3B53DF47781E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{E4540B0A-A6CA-4243-A282-48B19C4C643F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4540B0A-A6CA-4243-A282-48B19C4C643F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4540B0A-A6CA-4243-A282-48B19C4C643F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{307274CF-9DAD-4167-803E-3B53DF47781E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{307274CF-9DAD-4167-803E-3B53DF47781E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{307274CF-9DAD-4167-803E-3B53DF47781E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{307274CF-9DAD-4167-803E-3B53DF47781E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

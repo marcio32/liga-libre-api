@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LigaLibre.Application\LigaLibre.Application.csproj" />
     <ProjectReference Include="..\LigaLibre.Domain\LigaLibre.Domain.csproj" />
+    <ProjectReference Include="..\LigaLibre.EmailService\LigaLibre.EmailService.csproj" />
   </ItemGroup>
 
 </Project>

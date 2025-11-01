@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "Árbitros";
+}
+
+<link rel="stylesheet" href="~/css/referees.css" asp-append-version="true" />
+
+<div class="referee-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="fas fa-user-tie"></i> Gestión de Árbitros</h2>
+            <p class="mb-0">Administra todos los árbitros de la liga</p>
+        </div>
+        <button class="btn btn-lg" style="background: white; color: #29b6f6; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-radius: 30px; padding: 12px 30px; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.4)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.3)'" data-bs-toggle="modal" data-bs-target="#refereeModal" onclick="openCreateModal()">
+            <i class="fas fa-plus-circle"></i> Nuevo Árbitro
+        </button>
+    </div>
+</div>
+
+<div id="refereesList" class="row"></div>
+
+<!-- Modal Crear/Editar -->
+<div class="modal fade" id="refereeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Nuevo Árbitro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="refereeForm">
+                    <input type="hidden" id="refereeId">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-user"></i> Nombre</label>
+                        <input type="text" class="form-control" id="firstName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-user"></i> Apellido</label>
+                        <input type="text" class="form-control" id="lastName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-star"></i> Categoría</label>
+                        <select class="form-control" id="category">
+                            <option value="0">Nacional</option>
+                            <option value="1">Regional</option>
+                            <option value="2">Internacional</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-id-card"></i> Número de Licencia</label>
+                        <input type="text" class="form-control" id="licenseNumber">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" checked>
+                        <label class="form-check-label" for="isActive">Activo</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-gradient" onclick="saveReferee()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este árbitro?</p>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/referees.js"></script>
+}

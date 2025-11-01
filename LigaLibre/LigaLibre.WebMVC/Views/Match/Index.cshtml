@@ -1,0 +1,125 @@
+@model LigaLibre.WebMVC.Models.StatisticsViewModel
+@{
+    ViewData["Title"] = "Partidos y Estadísticas";
+}
+
+<link rel="stylesheet" href="~/css/matches.css" asp-append-version="true" />
+
+<div class="matches-container">
+    <h1><i class="fas fa-calendar-alt"></i> Partidos y Estadísticas</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-futbol"></i>
+            <h3>@Model.TotalMatches</h3>
+            <p>Total Partidos</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-check-circle"></i>
+            <h3>@Model.FinishedMatches</h3>
+            <p>Finalizados</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-clock"></i>
+            <h3>@Model.ScheduledMatches</h3>
+            <p>Programados</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-bullseye"></i>
+            <h3>@Model.TotalGoals</h3>
+            <p>Goles Totales</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>@Model.AverageGoalsPerMatch.ToString("F2")</h3>
+            <p>Promedio Goles</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>@Model.TotalClubs</h3>
+            <p>Clubes</p>
+        </div>
+    </div>
+
+    <div class="tables-container">
+        <div class="table-section">
+            <h2><i class="fas fa-trophy"></i> Goleadores</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Jugador</th>
+                        <th>Club</th>
+                        <th>Goles</th>
+                        <th>Asistencias</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.TopScorers.Any())
+                    {
+                        @for (int i = 0; i < Model.TopScorers.Count; i++)
+                        {
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@Model.TopScorers[i].PlayerName</td>
+                                <td>@Model.TopScorers[i].ClubName</td>
+                                <td><strong>@Model.TopScorers[i].Goals</strong></td>
+                                <td>@Model.TopScorers[i].Assists</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5" class="text-center">No hay datos</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-section">
+            <h2><i class="fas fa-list-ol"></i> Tabla de Posiciones</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Club</th>
+                        <th>PJ</th>
+                        <th>G</th>
+                        <th>E</th>
+                        <th>P</th>
+                        <th>GF</th>
+                        <th>GC</th>
+                        <th>DG</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Standings.Any())
+                    {
+                        @for (int i = 0; i < Model.Standings.Count; i++)
+                        {
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td><strong>@Model.Standings[i].ClubName</strong></td>
+                                <td>@Model.Standings[i].MatchesPlayed</td>
+                                <td>@Model.Standings[i].Wins</td>
+                                <td>@Model.Standings[i].Draws</td>
+                                <td>@Model.Standings[i].Losses</td>
+                                <td>@Model.Standings[i].GoalsFor</td>
+                                <td>@Model.Standings[i].GoalsAgainst</td>
+                                <td>@Model.Standings[i].GoalsDifference</td>
+                                <td><strong>@Model.Standings[i].Points</strong></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="10" class="text-center">No hay datos</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

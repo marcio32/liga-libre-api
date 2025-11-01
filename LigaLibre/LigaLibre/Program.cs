@@ -1,6 +1,7 @@
 
 using LigaLibre.API.Middlewares;
 using LigaLibre.Application;
+using LigaLibre.EmailService;
 using LigaLibre.Infrastructure;
 using LigaLibre.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +25,7 @@ namespace LigaLibre
             builder.Host.UseSerilog();
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddEmailService(builder.Configuration);
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>

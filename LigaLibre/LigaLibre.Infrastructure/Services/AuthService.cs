@@ -1,5 +1,6 @@
 ﻿using LigaLibre.Application.DTOs;
 using LigaLibre.Application.Interfaces;
+using LigaLibre.EmailService.Interfaces;
 using LigaLibre.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LigaLibre.EmailService.Models;
 
 namespace LigaLibre.Infrastructure.Services
 {
@@ -14,11 +16,14 @@ namespace LigaLibre.Infrastructure.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
 
@@ -34,7 +39,13 @@ namespace LigaLibre.Infrastructure.Services
 
             var token = await GenerateJwtTokenAsync(user.Email!);
             var roles = await _userManager.GetRolesAsync(user);
-
+            await _emailService.SendEmailAsync(new EmailMessage
+            {
+                To = user.Email!,
+                Subject = "Nuevo Inicio de Sesión Detectado",
+                Body = $"Hola {user.FirstName},\n\nHemos detectado un nuevo inicio de sesión en tu cuenta. Si no fuiste tú, por favor, inicia sesión de manera segura y cambia tu contraseña.\n\nGracias,\nEl Equipo de LigaLibre",
+                IsHtml = false
+            });
             return new AuthResponseDto
             {
                 Token = token,

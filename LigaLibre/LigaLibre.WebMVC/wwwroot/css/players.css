@@ -1,0 +1,123 @@
+.player-header {
+    background: linear-gradient(135deg, #4caf50, #2196f3);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.player-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid #4caf50;
+}
+
+.player-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.player-card h5 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.player-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.player-info-item {
+    background: #f5f5f5;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.player-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4caf50;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #4caf50, #2196f3);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-gradient:hover {
+    background: linear-gradient(135deg, #45a049, #1976d2);
+    color: white;
+}
+
+.badge-active {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+}
+
+.badge-inactive {
+    background-color: #f44336;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+}
+
+.position-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.position-portero {
+    background-color: #ff9800;
+    color: white;
+}
+
+.position-defensa {
+    background-color: #2196f3;
+    color: white;
+}
+
+.position-mediocampista {
+    background-color: #4caf50;
+    color: white;
+}
+
+.position-delantero {
+    background-color: #f44336;
+    color: white;
+}

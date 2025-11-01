@@ -1,13 +1,21 @@
+using Serilog;
+
 namespace LigaLibre.WebMVC
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            Log.Logger = new LoggerConfiguration()
+               .WriteTo.Console()
+               .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+               .CreateLogger();
 
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);

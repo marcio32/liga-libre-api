@@ -1,0 +1,124 @@
+@{
+    ViewData["Title"] = "Jugadores";
+}
+
+<link rel="stylesheet" href="~/css/players.css" asp-append-version="true" />
+
+<div class="player-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="fas fa-futbol"></i> Gestión de Jugadores</h2>
+            <p class="mb-0">Administra todos los jugadores de la liga</p>
+        </div>
+        <button class="btn btn-lg" style="background: white; color: #4caf50; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-radius: 30px; padding: 12px 30px; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.4)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.3)'" data-bs-toggle="modal" data-bs-target="#playerModal" onclick="openCreateModal()">
+            <i class="fas fa-plus-circle"></i> Nuevo Jugador
+        </button>
+    </div>
+</div>
+
+<div id="playersList" class="row"></div>
+
+<!-- Modal Crear/Editar -->
+<div class="modal fade" id="playerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Nuevo Jugador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="playerForm">
+                    <input type="hidden" id="playerId">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-user"></i> Nombre</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-user"></i> Apellido</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-running"></i> Posición</label>
+                            <select class="form-control" id="position" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Portero">Portero</option>
+                                <option value="Defensa">Defensa</option>
+                                <option value="Mediocampista">Mediocampista</option>
+                                <option value="Delantero">Delantero</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-tshirt"></i> Número de Camiseta</label>
+                            <input type="number" class="form-control" id="jerseyNumber" min="1" max="99" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-flag"></i> Nacionalidad</label>
+                            <input type="text" class="form-control" id="nationality" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-calendar"></i> Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" id="dateOfBirth" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label"><i class="fas fa-birthday-cake"></i> Edad</label>
+                            <input type="number" class="form-control" id="age" min="15" max="50" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label"><i class="fas fa-ruler-vertical"></i> Altura (m)</label>
+                            <input type="number" class="form-control" id="height" step="0.01" min="1.40" max="2.20" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label"><i class="fas fa-weight"></i> Peso (kg)</label>
+                            <input type="number" class="form-control" id="weight" min="50" max="120" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-shield-alt"></i> Club</label>
+                        <select class="form-control" id="clubId" required>
+                            <option value="">Seleccionar club...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" checked>
+                        <label class="form-check-label" for="isActive">Activo</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-gradient" onclick="savePlayer()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este jugador?</p>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/players.js"></script>
+}

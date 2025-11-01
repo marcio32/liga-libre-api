@@ -97,12 +97,6 @@ function editClub(id) {
 }
 
 function saveClub() {
-    const form = $('#clubForm')[0];
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
-
     const clubData = {
         name: $('#name').val(),
         city: $('#city').val(),
@@ -128,7 +122,9 @@ function createClub(clubData) {
         body: JSON.stringify(clubData)
     })
     .then(response => {
-        if (!response.ok) throw new Error('Error al crear club');
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
         return response.json();
     })
     .then(() => {
@@ -137,8 +133,7 @@ function createClub(clubData) {
         loadClubs();
     })
     .catch(error => {
-        showToast('Error al crear el club', 'danger');
-        console.error(error);
+        handleValidationErrors(error);
     });
 }
 
@@ -149,7 +144,9 @@ function updateClub(clubData) {
         body: JSON.stringify(clubData)
     })
     .then(response => {
-        if (!response.ok) throw new Error('Error al actualizar club');
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
         return response.json();
     })
     .then(() => {
@@ -158,8 +155,7 @@ function updateClub(clubData) {
         loadClubs();
     })
     .catch(error => {
-        showToast('Error al actualizar el club', 'danger');
-        console.error(error);
+        handleValidationErrors(error);
     });
 }
 
@@ -175,13 +171,34 @@ function confirmDelete() {
         headers: getHeaders()
     })
     .then(response => {
-        if (!response.ok) throw new Error('Error al eliminar club');
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
         showToast('Club eliminado exitosamente', 'success');
         bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
         loadClubs();
     })
     .catch(error => {
-        showToast('Error al eliminar el club', 'danger');
-        console.error(error);
+        handleValidationErrors(error, 'Error al eliminar el club');
     });
+}
+
+function handleValidationErrors(error, defaultMessage = 'Error de validación') {
+    if (Array.isArray(error)) {
+        error.forEach(err => showToast(err.errorMessage, 'danger'));
+        return;
+    }
+    if (error && typeof error === 'object') {
+        const messages = [];
+        for (const field in error) {
+            if (Array.isArray(error[field])) {
+                messages.push(...error[field]);
+            }
+        }
+        if (messages.length > 0) {
+            messages.forEach(msg => showToast(msg, 'danger'));
+            return;
+        }
+    }
+    showToast(defaultMessage, 'danger');
 }

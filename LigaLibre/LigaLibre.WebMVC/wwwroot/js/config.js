@@ -1,6 +1,6 @@
 // Configuración de la API
 const API_CONFIG = {
-    baseUrl: 'https://localhost:44348',
+    baseUrl: 'https://localhost:7007',
     endpoints: {
         auth: {
             login: '/api/auth/login',

@@ -42,7 +42,7 @@ namespace LigaLibre.Application.Validators
 
         private static bool BeValidPosition(string position)
         {
-            var validPositions = new[] { "Portero", "Defensa", "Mediocampo", "Delantero" };
+            var validPositions = new[] { "Portero", "Defensa", "Mediocampista", "Delantero" };
             return validPositions.Contains(position);
         }
     }
