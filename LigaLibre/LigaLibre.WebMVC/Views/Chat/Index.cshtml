@@ -1,0 +1,692 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Chat - Liga Libre</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<style>
+		:root {
+			--primary-color: #2563eb;
+			--secondary-color: #1e40af;
+			--success-color: #10b981;
+			--bg-light: #f8fafc;
+			--border-color: #e2e8f0;
+			--text-muted: #64748b;
+		}
+
+		body {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+		.chat-container {
+			max-width: 1000px;
+			margin: 2rem auto;
+			padding: 0 1rem;
+		}
+
+		.chat-card {
+			background: white;
+			border-radius: 16px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			overflow: hidden;
+		}
+
+		.chat-header {
+			background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+			color: white;
+			padding: 1.5rem;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+			.chat-header h1 {
+				margin: 0;
+				font-size: 1.5rem;
+				font-weight: 600;
+			}
+
+		.connection-status {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: 0.875rem;
+		}
+
+		.status-indicator {
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: #ef4444;
+			transition: background 0.3s;
+		}
+
+			.status-indicator.connected {
+				background: var(--success-color);
+				animation: pulse 2s infinite;
+			}
+
+
+
+		.chat-body {
+			display: grid;
+			grid-template-columns: 250px 1fr;
+			gap: 0;
+			height: 600px;
+		}
+
+		.sidebar {
+			background: var(--bg-light);
+			border-right: 1px solid var(--border-color);
+			padding: 1.5rem;
+			overflow-y: auto;
+		}
+
+		.sidebar-section {
+			margin-bottom: 2rem;
+		}
+
+		.sidebar-title {
+			font-size: 0.75rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			margin-bottom: 0.75rem;
+			letter-spacing: 0.5px;
+		}
+
+		.user-info {
+			background: white;
+			border-radius: 8px;
+			padding: 1rem;
+			margin-bottom: 1rem;
+			border: 1px solid var(--border-color);
+		}
+
+			.user-info label {
+				font-size: 0.875rem;
+				font-weight: 500;
+				margin-bottom: 0.5rem;
+				color: #334155;
+			}
+
+			.user-info input {
+				border-radius: 6px;
+				border: 1px solid var(--border-color);
+				padding: 0.5rem;
+				font-size: 0.875rem;
+			}
+
+				.user-info input:focus {
+					border-color: var(--primary-color);
+					box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+				}
+
+		.connect-button {
+			width: 100%;
+			margin-top: 0.75rem;
+			padding: 0.625rem;
+			background: var(--success-color);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			font-weight: 600;
+			font-size: 0.875rem;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+
+			.connect-button:hover {
+				background: #059669;
+				transform: translateY(-1px);
+			}
+
+			.connect-button:disabled {
+				background: #9ca3af;
+				cursor: not-allowed;
+				transform: none;
+			}
+
+		.room-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		.room-item {
+			background: white;
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			padding: 0.75rem;
+			cursor: pointer;
+			transition: all 0.2s;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+			.room-item:hover {
+				background: var(--primary-color);
+				color: white;
+				transform: translateX(4px);
+			}
+
+			.room-item.active {
+				background: var(--primary-color);
+				color: white;
+				border-color: var(--primary-color);
+			}
+
+			.room-item:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+				pointer-events: none;
+			}
+
+		.room-icon {
+			font-size: 1.25rem;
+		}
+
+		.chat-main {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.messages-container {
+			flex: 1;
+			overflow-y: auto;
+			padding: 1.5rem;
+			background: #fafafa;
+			scroll-behavior: smooth;
+		}
+
+		.messages-container::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		.messages-container::-webkit-scrollbar-track {
+			background: #f1f1f1;
+			border-radius: 10px;
+		}
+
+		.messages-container::-webkit-scrollbar-thumb {
+			background: #cbd5e1;
+			border-radius: 10px;
+		}
+
+		.messages-container::-webkit-scrollbar-thumb:hover {
+			background: #94a3b8;
+		}
+
+		.message {
+			margin-bottom: 1rem;
+			animation: slideIn 0.3s ease;
+		}
+
+		.message-header {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin-bottom: 0.25rem;
+		}
+
+		.message-user {
+			font-weight: 600;
+			color: var(--primary-color);
+			font-size: 0.875rem;
+		}
+
+		.message-time {
+			font-size: 0.75rem;
+			color: var(--text-muted);
+		}
+
+		.message-content {
+			background: white;
+			padding: 0.75rem 1rem;
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+			max-width: 70%;
+			word-wrap: break-word;
+		}
+
+		.system-message {
+			text-align: center;
+			margin: 1rem 0;
+			animation: slideIn 0.3s ease;
+		}
+
+		.system-message-content {
+			display: inline-block;
+			background: #f0f9ff;
+			color: #0369a1;
+			padding: 0.5rem 1rem;
+			border-radius: 16px;
+			font-size: 0.8125rem;
+			border: 1px solid #bae6fd;
+		}
+
+		.chat-input-area {
+			padding: 1.5rem;
+			background: white;
+			border-top: 1px solid var(--border-color);
+		}
+
+		.input-wrapper {
+			display: flex;
+			gap: 0.75rem;
+			align-items: center;
+		}
+
+		.message-input {
+			flex: 1;
+			border: 1px solid var(--border-color);
+			border-radius: 24px;
+			padding: 0.75rem 1.25rem;
+			font-size: 0.9375rem;
+			transition: all 0.2s;
+		}
+
+			.message-input:focus {
+				outline: none;
+				border-color: var(--primary-color);
+				box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+			}
+
+		.send-button {
+			background: var(--primary-color);
+			color: white;
+			border: none;
+			border-radius: 50%;
+			width: 48px;
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: all 0.2s;
+			font-size: 1.25rem;
+		}
+
+			.send-button:hover {
+				background: var(--secondary-color);
+				transform: scale(1.05);
+			}
+
+			.send-button:active {
+				transform: scale(0.95);
+			}
+
+		.empty-state {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--text-muted);
+			text-align: center;
+		}
+
+		.empty-state-icon {
+			font-size: 4rem;
+			margin-bottom: 1rem;
+			opacity: 0.3;
+		}
+
+		.typing-indicator {
+			padding: 0.5rem 1rem;
+			background: #f0f9ff;
+			border-radius: 8px;
+			margin-bottom: 0.5rem;
+			font-size: 0.8125rem;
+			color: #0369a1;
+			font-style: italic;
+			display: none;
+			animation: fadeIn 0.3s ease;
+		}
+
+		.typing-indicator.show {
+			display: block;
+		}
+	</style>
+
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		// Funcionalidad de selección de salas
+		let connection;
+		let currentRoomId = '1';
+		document.addEventListener('DOMContentLoaded', function() {
+			const roomItems = document.querySelectorAll('.room-item');
+			const connectButton = document.getElementById('connectButton');
+			const userInput = document.getElementById('userInput');
+			const sendBtn = document.getElementById('sendButton');
+			const messageInput = document.getElementById('messageInput');
+			let isConnected = false;
+
+			// Selección de salas
+			roomItems.forEach(item => {
+				item.addEventListener('click', function() {
+					if (!isConnected) return;
+
+					roomItems.forEach(r => r.classList.remove('active'));
+					this.classList.add('active');
+					currentRoomId = this.getAttribute('data-room-id');
+
+
+					connection.invoke("JoinRoom", currentRoomId, currentUser)
+					// Limpiar mensajes al cambiar de sala
+					const messagesList = document.getElementById('messagesList');
+					messagesList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><p>No hay mensajes aún.<br>¡Sé el primero en escribir!</p></div>';
+
+					// Aquí puedes agregar lógica para cambiar de sala en SignalR
+					console.log('Sala seleccionada:', currentRoomId, this.getAttribute('data-room-name'));
+				});
+			});
+
+			// Botón de conectar
+			connectButton.addEventListener('click', function() {
+				const username = userInput.value.trim();
+				const statusIndicator = document.getElementById('statusIndicator');
+				const statusText = document.getElementById('statusText');
+
+				if (!username) {
+					alert('Por favor ingresa tu nombre de usuario');
+					userInput.focus();
+					return;
+				}
+
+				if (!isConnected) {
+					// Conectar
+					isConnected = true;
+					connectButton.textContent = '🔌 Desconectar';
+					connectButton.style.background = '#ef4444';
+					userInput.disabled = true;
+					roomItems.forEach(r => r.style.pointerEvents = 'auto');
+					statusIndicator.classList.add('connected');
+					statusText.textContent = 'Conectado';
+
+
+					connect();
+
+				} else {
+					// Desconectar
+					isConnected = false;
+					connectButton.textContent = '🔌 Conectar';
+					connectButton.style.background = '#10b981';
+					userInput.disabled = false;
+					roomItems.forEach(r => {
+						if (!r.classList.contains('active')) {
+							r.style.pointerEvents = 'none';
+						}
+					});
+					statusIndicator.classList.remove('connected');
+					statusText.textContent = 'Desconectado';
+
+					// Aquí puedes agregar lógica de desconexión SignalR
+					console.log('Usuario desconectado');
+				}
+			});
+
+			// Deshabilitar salas hasta conectar
+			roomItems.forEach(r => {
+				if (!r.classList.contains('active')) {
+					r.style.pointerEvents = 'none';
+				}
+			});
+
+			// Permitir conectar con Enter
+			userInput.addEventListener('keypress', function(e) {
+				if (e.key === 'Enter' && !isConnected) {
+					connectButton.click();
+				}
+			});
+		
+			//Enviar Mensaje
+			sendBtn.addEventListener("click", sendMessage);
+
+			// Detectar cuando el usuario está escribiendo
+			messageInput.addEventListener('input', function() {
+				const message = messageInput.value.trim();
+				
+				if (message.length === 0) {
+					// Si el input está vacío, cancelar el typing
+					if (connection) {
+						connection.invoke("CanceledNotifyTyping", currentRoomId, currentUser);
+					}
+				} else {
+					// Si hay texto, notificar que está escribiendo
+					notifyTyping(currentRoomId);
+				}
+			});
+
+			// Enviar con Enter
+			messageInput.addEventListener('keypress', function(e) {
+				if (e.key === 'Enter' && isConnected) {
+					sendMessage();
+				}
+			});
+		});
+
+
+
+		async function connect(){
+			currentUser = userInput.value.trim() || "Anonimo";
+			connection = new signalR.HubConnectionBuilder().withUrl(`/chatHub?user=${currentUser}`).withAutomaticReconnect().build();
+			
+			connection.on("UserJoined", (userName, roomName) => {
+				addSystemMessage(`${userName} se ha conectado a ${roomName}`);
+			});
+
+			connection.on("ReceiveMessage", (user, message, timestamp) => {
+				addMessage(user,message,timestamp, false)
+			});
+
+			connection.on("UserTyping", (user) => {
+				showTypingIndicator(user);
+			});
+
+			connection.on("UserCanceledTyping", () => {
+				hideTypingIndicator();
+			});
+
+			await connection.start();
+		}
+
+		function addSystemMessage(message){
+			const messagesList = document.getElementById('messagesList');
+			
+			// Remover estado vacío si existe
+			const emptyState = messagesList.querySelector('.empty-state');
+			if (emptyState) {
+				emptyState.remove();
+			}
+			
+			const systemMessageDiv = document.createElement('div');
+			systemMessageDiv.className = 'system-message';
+			
+			const contentDiv = document.createElement('div');
+			contentDiv.className = 'system-message-content';
+			contentDiv.textContent = message;
+			
+			systemMessageDiv.appendChild(contentDiv);
+			messagesList.appendChild(systemMessageDiv);
+			
+			// Auto-scroll al final
+			messagesList.scrollTop = messagesList.scrollHeight;
+		}
+
+		function addMessage(user, message, timestamp, isOwnMessage){
+			const messagesList = document.getElementById('messagesList');
+			
+			// Remover estado vacío si existe
+			const emptyState = messagesList.querySelector('.empty-state');
+			if (emptyState) {
+				emptyState.remove();
+			}
+			
+			// Crear contenedor del mensaje
+			const messageDiv = document.createElement('div');
+			messageDiv.className = 'message';
+			
+			// Crear header del mensaje (usuario y hora)
+			const headerDiv = document.createElement('div');
+			headerDiv.className = 'message-header';
+			
+			const userSpan = document.createElement('span');
+			userSpan.className = 'message-user';
+			userSpan.textContent = user;
+			
+			const timeSpan = document.createElement('span');
+			timeSpan.className = 'message-time';
+			timeSpan.textContent = formatTimestamp(timestamp);
+			
+			headerDiv.appendChild(userSpan);
+			headerDiv.appendChild(timeSpan);
+			
+			// Crear contenido del mensaje
+			const contentDiv = document.createElement('div');
+			contentDiv.className = 'message-content';
+			contentDiv.textContent = message;
+			
+			// Ensamblar mensaje
+			messageDiv.appendChild(headerDiv);
+			messageDiv.appendChild(contentDiv);
+			messagesList.appendChild(messageDiv);
+			
+			// Auto-scroll al final
+			messagesList.scrollTop = messagesList.scrollHeight;
+		}
+
+		async function sendMessage(){
+			const message = messageInput.value.trim();
+			if(message  && connect){
+				await connection.invoke("CanceledNotifyTyping", currentRoomId, currentUser);
+				await connection.invoke("SendMessageToRoom", currentRoomId ,currentUser, message);
+				addMessage(currentUser, message, new Date(), true);
+				messageInput.value = "";
+			}
+		}
+
+		async function notifyTyping(roomId){
+			if (!connection) return;
+			connection.invoke("NotifyTyping", roomId, currentUser);
+		}
+
+		function formatTimestamp(timestamp){
+			const date = new Date(timestamp);
+			const hours = date.getHours().toString().padStart(2, '0');
+			const minutes = date.getMinutes().toString().padStart(2, '0');
+			return `${hours}:${minutes}`;
+		}
+
+		function showTypingIndicator(user){
+			const typingIndicator = document.getElementById('typingIndicator');
+			const typingUser = document.getElementById('typingUser');
+			typingUser.textContent = user;
+			typingIndicator.classList.add('show');
+		}
+
+		function hideTypingIndicator(){
+			const typingIndicator = document.getElementById('typingIndicator');
+			typingIndicator.classList.remove('show');
+		}
+	</script>
+</head>
+
+<body>
+	<div class="chat-container">
+		<div class="chat-card">
+			<header class="chat-header">
+				<h1>💬 Chat - Liga Libre</h1>
+				<div class="connection-status">
+					<span class="status-indicator" id="statusIndicator"></span>
+					<span id="statusText">Desconectado</span>
+				</div>
+			</header>
+
+			<div class="chat-body">
+				<aside class="sidebar">
+					<div class="sidebar-section">
+						<h2 class="sidebar-title">Usuario</h2>
+						<div class="user-info">
+							<label for="userInput">Nombre de usuario</label>
+							<input type="text"
+								   id="userInput"
+								   class="form-control"
+								   placeholder="Ingresa tu nombre"
+								   maxlength="30"
+								   aria-label="Nombre de usuario"
+								   required />
+							<button id="connectButton"
+									class="connect-button"
+									aria-label="Conectar al chat">
+								🔌 Conectar
+							</button>
+						</div>
+					</div>
+
+					<div class="sidebar-section">
+						<h2 class="sidebar-title">Salas de Chat</h2>
+						<div class="room-list" id="roomList">
+							<div class="room-item" data-room-id="1" data-room-name="General">
+								<span class="room-icon">🏠</span>
+								<span>General</span>
+							</div>
+							<div class="room-item" data-room-id="2" data-room-name="Fútbol">
+								<span class="room-icon">⚽</span>
+								<span>Fútbol</span>
+							</div>
+							<div class="room-item" data-room-id="3" data-room-name="Resultados">
+								<span class="room-icon">📊</span>
+								<span>Resultados</span>
+							</div>
+							<div class="room-item" data-room-id="4" data-room-name="Noticias">
+								<span class="room-icon">📰</span>
+								<span>Noticias</span>
+							</div>
+						</div>
+					</div>
+				</aside>
+
+				<main class="chat-main">
+					<div class="messages-container" id="messagesList" role="log" aria-live="polite" aria-label="Mensajes del chat">
+						<div class="empty-state">
+							<div class="empty-state-icon">💬</div>
+							<p>No hay mensajes aún.<br>¡Sé el primero en escribir!</p>
+						</div>
+					</div>
+
+					<div class="chat-input-area">
+						<div id="typingIndicator" class="typing-indicator">
+							✍️ <span id="typingUser"></span> está escribiendo...
+						</div>
+						<div class="input-wrapper">
+							<input type="text"
+								   id="messageInput"
+								   class="message-input"
+								   placeholder="Escribe un mensaje..."
+								   maxlength="500"
+								   aria-label="Mensaje" />
+							<button id="sendButton"
+									class="send-button"
+									aria-label="Enviar mensaje"
+									title="Enviar mensaje">
+								➤
+							</button>
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+</body>
+</html>

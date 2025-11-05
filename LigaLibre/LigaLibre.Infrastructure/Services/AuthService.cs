@@ -39,13 +39,20 @@ namespace LigaLibre.Infrastructure.Services
 
             var token = await GenerateJwtTokenAsync(user.Email!);
             var roles = await _userManager.GetRolesAsync(user);
-            await _emailService.SendEmailAsync(new EmailMessage
+            try
             {
-                To = user.Email!,
-                Subject = "Nuevo Inicio de Sesión Detectado",
-                Body = $"Hola {user.FirstName},\n\nHemos detectado un nuevo inicio de sesión en tu cuenta. Si no fuiste tú, por favor, inicia sesión de manera segura y cambia tu contraseña.\n\nGracias,\nEl Equipo de LigaLibre",
-                IsHtml = false
-            });
+                await _emailService.SendEmailAsync(new EmailMessage
+                {
+                    To = user.Email!,
+                    Subject = "Nuevo Inicio de Sesión Detectado",
+                    Body = $"Hola {user.FirstName},\n\nHemos detectado un nuevo inicio de sesión en tu cuenta. Si no fuiste tú, por favor, inicia sesión de manera segura y cambia tu contraseña.\n\nGracias,\nEl Equipo de LigaLibre",
+                    IsHtml = false
+                });
+            }
+            catch  (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+            }
             return new AuthResponseDto
             {
                 Token = token,

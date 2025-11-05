@@ -1,3 +1,4 @@
+using LigaLibre.WebMVC.Hubs;
 using Serilog;
 
 namespace LigaLibre.WebMVC
@@ -16,6 +17,7 @@ namespace LigaLibre.WebMVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
+            builder.Services.AddSignalR();
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -43,6 +45,8 @@ namespace LigaLibre.WebMVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Auth}/{action=Login}/{id?}");
+
+            app.MapHub<ChatHub>("/chatHub");
 
             app.Run();
         }
